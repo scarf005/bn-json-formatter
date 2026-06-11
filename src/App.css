@@ -1,26 +1,51 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.solid:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+main {
+  max-width: 100%;
 }
 
-.card {
-  padding: 2em;
+form {
+  max-width: 100%;
 }
 
-.read-the-docs {
-  color: #888;
+textarea {
+  width: 100%;
+  max-width: 1400px;
+  padding: 15px;
+  border: solid 1px #ccc;
+  font-family: monospace;
+  font-size: 1.2em;
+  transition: border-color 0.1s ease;
+}
+
+textarea:focus {
+  border-color: #444;
+  outline: none;
+}
+
+input[type="submit"] {
+  display: block;
+  padding: 10px 35px;
+  border: solid 1px #ccc;
+  border-radius: 3px;
+  background: #333;
+  color: white;
+  font-size: 1.4em;
+  font-weight: 100;
+  transition: background-color 0.1s ease, transform 0.1s ease-in;
+}
+
+input[type="submit"]:hover:not(:disabled) {
+  background-color: #555;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+input[type="submit"]:disabled,
+textarea:disabled {
+  cursor: wait;
 }

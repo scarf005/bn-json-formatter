@@ -1,7 +1,9 @@
 {
   "tasks": {
     "dev": "deno run -A --node-modules-dir npm:vite",
-    "build": "deno run -A --node-modules-dir npm:vite build",
+    "build:wasm": "deno run --allow-env --allow-read --allow-write --allow-run --allow-net scripts/build-wasm.ts",
+    "build": "deno task build:wasm && deno run -A --node-modules-dir npm:vite build",
+    "check": "deno check src/main.tsx scripts/build-wasm.ts",
     "preview": "deno run -A --node-modules-dir npm:vite preview",
     "serve": "deno run --allow-net --allow-read jsr:@std/http@1/file-server dist/",
   },

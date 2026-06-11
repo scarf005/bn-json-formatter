@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 .vite
+vendor
+public/json_formatter.js
+public/json_formatter.wasm
 *.local
 
 # Editor directories and files

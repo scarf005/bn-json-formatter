@@ -1,34 +1,59 @@
 import "./App.css"
 import { createSignal } from "solid-js"
-import solidLogo from "./assets/solid.svg"
+import { formatJson } from "./formatter.ts"
 
 function App() {
-  const [count, setCount] = createSignal(0)
+  const [data, setData] = createSignal("")
+  const [busy, setBusy] = createSignal(false)
+
+  const lint = async (event: SubmitEvent) => {
+    event.preventDefault()
+    if (data().length === 0 || busy()) return
+
+    setBusy(true)
+    try {
+      setData(await formatJson(data()))
+    } catch (error) {
+      alert(
+        error instanceof Error && error.message.length > 0
+          ? error.message
+          : "Syntax error",
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
-    <div class="App">
-      <img src="/vite-deno.svg" alt="Vite with Deno" />
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://www.solidjs.com" target="_blank">
-          <img src={solidLogo} class="logo solid" alt="Solid logo" />
-        </a>
-      </div>
-      <h1>Vite + Solid</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count()}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p class="read-the-docs">
-        Click on the Vite and Solid logos to learn more
+    <main>
+      <h1>Cataclysm: Bright Nights JSON Web Linting Tool</h1>
+      <p>
+        This is a tool to help modders and editors of the open source game{" "}
+        <a href="https://github.com/cataclysmbn/Cataclysm-BN">
+          Cataclysm: Bright Nights
+        </a>{" "}
+        write JSON in the game's expected format.
       </p>
-    </div>
+      <p>
+        Paste some JSON into the field below and click "Lint" to run an
+        autoformatter against it.
+      </p>
+      <form onSubmit={lint} aria-busy={busy()}>
+        <textarea
+          name="data"
+          rows="30"
+          placeholder="Paste JSON here"
+          value={data()}
+          disabled={busy()}
+          onInput={(event) => setData(event.currentTarget.value)}
+        />
+        <input
+          type="submit"
+          value={busy() ? "Linting" : "Lint"}
+          disabled={busy()}
+        />
+      </form>
+    </main>
   )
 }
 
