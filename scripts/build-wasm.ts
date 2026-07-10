@@ -1,5 +1,7 @@
 /// <reference lib="deno.ns" />
 
+import "typescript"
+
 const root = new URL("../", import.meta.url)
 const path = (relative: string) => new URL(relative, root).pathname
 
@@ -8,6 +10,9 @@ const repoUrl = Deno.env.get("BN_REPO_URL") ??
   "https://github.com/cataclysmbn/Cataclysm-BN.git"
 const ref = Deno.env.get("BN_REF") ?? "main"
 const emxx = Deno.env.get("EMXX") ?? "em++"
+const commandPath = `${
+  new URL("../bin/", import.meta.resolve("typescript")).pathname
+}${Deno.build.os === "windows" ? ";" : ":"}${Deno.env.get("PATH") ?? ""}`
 
 async function exists(target: string) {
   try {
@@ -25,6 +30,7 @@ async function run(command: string, args: string[]) {
     cwd: root.pathname,
     stdout: "inherit",
     stderr: "inherit",
+    env: { PATH: commandPath },
   }).spawn().status
   if (!status.success) {
     throw new Error(`${command} ${args.join(" ")} failed with ${status.code}`)
@@ -73,9 +79,12 @@ await run(emxx, [
   "-sENVIRONMENT=web",
   "-sEXPORT_ES6=1",
   "-sEXPORT_NAME=createBnJsonFormatter",
-  '-sEXPORTED_FUNCTIONS=["_format_json","_free_string","_get_last_error"]',
-  '-sEXPORTED_RUNTIME_METHODS=["ccall","UTF8ToString"]',
+  '-sEXPORTED_FUNCTIONS=["_format_json","_free","_free_string","_get_last_error","_malloc"]',
+  '-sEXPORTED_RUNTIME_METHODS=["lengthBytesUTF8","stringToUTF8","UTF8ToString"]',
   "-sMODULARIZE=1",
+  "--emit-tsd",
+  path("public/json_formatter.d.ts"),
   "-o",
   path("public/json_formatter.js"),
 ])
+await run(Deno.execPath(), ["fmt", path("public/json_formatter.d.ts")])

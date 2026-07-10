@@ -1,18 +1,9 @@
-type FormatterModule = {
-  ccall: (
-    name: string,
-    returnType: "number" | "string" | null,
-    argTypes: ("string" | "number")[],
-    args: (string | number)[],
-  ) => number | string | null
-  UTF8ToString: (pointer: number) => string
-}
+import type createBnJsonFormatter from "../public/json_formatter.d.ts"
+import type { MainModule } from "../public/json_formatter.d.ts"
 
-type FormatterFactory = (options: {
-  locateFile: (path: string) => string
-}) => Promise<FormatterModule>
+type FormatterFactory = typeof createBnJsonFormatter
 
-let formatterPromise: Promise<FormatterModule> | undefined
+let formatterPromise: Promise<MainModule> | undefined
 
 const loadFormatter = async () => {
   formatterPromise ??= (async () => {
@@ -21,27 +12,34 @@ const loadFormatter = async () => {
     const factory = (await import(/* @vite-ignore */ scriptUrl))
       .default as FormatterFactory
     return factory({
-      locateFile: (path) => new URL(path, scriptUrl).toString(),
+      locateFile: (path: string) => new URL(path, scriptUrl).toString(),
     })
   })()
   return formatterPromise
 }
 
-export async function formatJson(input: string) {
+export const formatJson = async (input: string) => {
   const formatter = await loadFormatter()
-  const result = formatter.ccall("format_json", "number", ["string"], [
-    input,
-  ]) as number
-  if (result === 0) {
-    const error = formatter.ccall("get_last_error", "number", [], []) as number
-    throw new Error(
-      error === 0 ? "Syntax error" : formatter.UTF8ToString(error),
-    )
-  }
+  const inputSize = formatter.lengthBytesUTF8(input) + 1
+  const inputPointer = formatter._malloc(inputSize)
+  if (inputPointer === 0) throw new Error("Unable to allocate formatter input.")
 
   try {
-    return formatter.UTF8ToString(result)
+    formatter.stringToUTF8(input, inputPointer, inputSize)
+    const result = formatter._format_json(inputPointer)
+    if (result === 0) {
+      const error = formatter._get_last_error()
+      throw new Error(
+        error === 0 ? "Syntax error" : formatter.UTF8ToString(error),
+      )
+    }
+
+    try {
+      return formatter.UTF8ToString(result)
+    } finally {
+      formatter._free_string(result)
+    }
   } finally {
-    formatter.ccall("free_string", null, ["number"], [result])
+    formatter._free(inputPointer)
   }
 }
