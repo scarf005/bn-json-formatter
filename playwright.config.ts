@@ -6,6 +6,7 @@ export default defineConfig({
   outputDir: ".vite/playwright",
   reporter: "line",
   workers: 1,
+  projects: [{ name: "firefox", use: { browserName: "firefox" } }],
   use: { baseURL: "http://127.0.0.1:8000" },
   webServer: {
     command: "deno task serve",

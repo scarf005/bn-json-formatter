@@ -2,7 +2,7 @@
   "version": "5",
   "specifiers": {
     "npm:@deno/vite-plugin@^1.0.5": "1.0.6_vite@7.3.3",
-    "npm:@playwright/test@1.60.0": "1.60.0",
+    "npm:@playwright/test@1.61.1": "1.61.1",
     "npm:solid-js@^1.9.10": "1.9.13",
     "npm:typescript@5.9.3": "5.9.3",
     "npm:vite-plugin-solid@^2.11.10": "2.11.12_solid-js@1.9.13_vite@7.3.3",
@@ -309,8 +309,8 @@
         "@jridgewell/sourcemap-codec"
       ]
     },
-    "@playwright/test@1.60.0": {
-      "integrity": "sha512-O71yZIbAh/PxDMNGns37GHBIfrVkEVyn+AXyIa5dOTfb4/xNvRWV+Vv/NMbNCtODB/pO7vLlF2OTmMVLhmr7Ag==",
+    "@playwright/test@1.61.1": {
+      "integrity": "sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig==",
       "dependencies": [
         "playwright"
       ],
@@ -640,12 +640,12 @@
     "picomatch@4.0.4": {
       "integrity": "sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A=="
     },
-    "playwright-core@1.60.0": {
-      "integrity": "sha512-9bW6zvX/m0lEbgTKJ6YppOKx8H3VOPBMOCFh2irXFOT4BbHgrx5hPjwJYLT40Lu+4qtD36qKc/Hn56StUW57IA==",
+    "playwright-core@1.61.1": {
+      "integrity": "sha512-h7Qlt6m4REp25qvIdvbDtVmD4LqVXfpRxhORv9L0jzETM05p4fuPJ3dKyuSXQxDSbXnmS79HAgi9589lGSpLkg==",
       "bin": true
     },
-    "playwright@1.60.0": {
-      "integrity": "sha512-hheHdokM8cdqCb0lcE3s+zT4t4W+vvjpGxsZlDnikarzx8tSzMebh3UiFtgqwFwnTnjYQcsyMF8ei2mCO/tpeA==",
+    "playwright@1.61.1": {
+      "integrity": "sha512-DWnY5o3YbLWK4GovuAVwpqL+1VwGNdUGrRr++8j8PtQQzvAVZUIMjKQ90fY689sEJZJBbZVw1rXaOKSTitkzPQ==",
       "dependencies": [
         "playwright-core"
       ],
@@ -794,7 +794,7 @@
   "workspace": {
     "dependencies": [
       "npm:@deno/vite-plugin@^1.0.5",
-      "npm:@playwright/test@1.60.0",
+      "npm:@playwright/test@1.61.1",
       "npm:solid-js@^1.9.10",
       "npm:typescript@5.9.3",
       "npm:vite-plugin-solid@^2.11.10",

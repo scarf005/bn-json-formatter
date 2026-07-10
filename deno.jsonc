@@ -4,7 +4,7 @@
     "build:wasm": "deno run --allow-env --allow-read --allow-write --allow-run --allow-net scripts/build-wasm.ts",
     "build": "deno task build:wasm && deno run -A --node-modules-dir npm:vite build",
     "check": "deno check --node-modules-dir=auto src/main.tsx scripts/build-wasm.ts playwright.config.ts tests/formatter.spec.ts",
-    "test": "deno task build && deno run -A --node-modules-dir=auto npm:@playwright/test@1.60.0/cli test",
+    "test": "deno task build && deno run -A --node-modules-dir=auto npm:@playwright/test@1.61.1/cli test",
     "preview": "deno run -A --node-modules-dir npm:vite preview",
     "serve": "deno run --allow-net --allow-read jsr:@std/http@1/file-server dist/",
   },
@@ -20,7 +20,7 @@
   },
   "imports": {
     "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.5",
-    "@playwright/test": "npm:@playwright/test@1.60.0",
+    "@playwright/test": "npm:@playwright/test@1.61.1",
     "solid-js": "npm:solid-js@^1.9.10",
     "typescript": "npm:typescript@5.9.3",
     "vite": "npm:vite@^7.2.7",

@@ -76,6 +76,7 @@ await run(emxx, [
   path("wasm/json_formatter_shim.cpp"),
   "--no-entry",
   "-sALLOW_MEMORY_GROWTH=1",
+  "-sGROWABLE_ARRAYBUFFERS=0",
   "-sENVIRONMENT=web",
   "-sEXPORT_ES6=1",
   "-sEXPORT_NAME=createBnJsonFormatter",
