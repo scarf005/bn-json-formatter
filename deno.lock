@@ -1,6 +1,8 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/internal@^1.0.10": "1.0.14",
+    "jsr:@std/path@1.1.2": "1.1.2",
     "npm:@deno/vite-plugin@^1.0.5": "1.0.6_vite@7.3.3",
     "npm:@playwright/test@1.61.1": "1.61.1",
     "npm:solid-js@^1.9.10": "1.9.13",
@@ -8,6 +10,17 @@
     "npm:vite-plugin-solid@^2.11.10": "2.11.12_solid-js@1.9.13_vite@7.3.3",
     "npm:vite@*": "7.3.3",
     "npm:vite@^7.2.7": "7.3.3"
+  },
+  "jsr": {
+    "@std/internal@1.0.14": {
+      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
+    },
+    "@std/path@1.1.2": {
+      "integrity": "c0b13b97dfe06546d5e16bf3966b1cadf92e1cc83e56ba5476ad8b498d9e3038",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    }
   },
   "npm": {
     "@babel/code-frame@7.29.0": {
@@ -793,6 +806,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@std/path@1.1.2",
       "npm:@deno/vite-plugin@^1.0.5",
       "npm:@playwright/test@1.61.1",
       "npm:solid-js@^1.9.10",

@@ -2,6 +2,7 @@
   "tasks": {
     "dev": "deno run -A --node-modules-dir npm:vite",
     "build:wasm": "deno run --allow-env --allow-read --allow-write --allow-run --allow-net scripts/build-wasm.ts",
+    "build:native": "deno run --allow-env=BN_SOURCE_DIR --allow-read --allow-write=dist --allow-run=g++ scripts/build-native.ts",
     "build": "deno task build:wasm && deno run -A --node-modules-dir npm:vite build",
     "check": "deno check --node-modules-dir=auto src/main.tsx scripts/build-wasm.ts playwright.config.ts tests/formatter.spec.ts",
     "test": "deno task build && deno run -A --node-modules-dir=auto npm:@playwright/test@1.61.1/cli test",
@@ -21,6 +22,7 @@
   "imports": {
     "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.5",
     "@playwright/test": "npm:@playwright/test@1.61.1",
+    "@std/path": "jsr:@std/path@1.1.2",
     "solid-js": "npm:solid-js@^1.9.10",
     "typescript": "npm:typescript@5.9.3",
     "vite": "npm:vite@^7.2.7",
