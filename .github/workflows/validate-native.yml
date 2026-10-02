@@ -1,0 +1,82 @@
+name: Validate prebuilt formatters
+
+on:
+  push:
+    branches: [ci/native-formatter-validation]
+
+permissions: { contents: read }
+
+env:
+  BN_REF: cc9c172dda68abf607087f39b2c0a9234ad1cc40
+  BN_SOURCE_DIR: vendor/Cataclysm-BN
+  JSON_FORMATTER_RELEASE: native-cc9c172dda68
+  JSON_FORMATTER_SHA256: 0d24b7a5a5cf2456731ccbfedd4d7eec06e2ba9d7234d205e7fd7424795eed69
+
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: scarf005/Cataclysm-BN
+          ref: ${{ env.BN_REF }}
+          path: vendor/Cataclysm-BN
+          sparse-checkout: |
+            src
+            tools/format
+            data
+            LICENSE.txt
+      - uses: denoland/setup-deno@v2
+        with: { cache: true }
+      - run: |
+          deno fmt --check scripts/build-native.ts deno.jsonc README.md .github/workflows/validate-native.yml
+          deno check scripts/build-native.ts
+          deno lint scripts/build-native.ts
+          deno task build:native
+      - name: Download and verify released assets
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          gh release download "$JSON_FORMATTER_RELEASE" --repo scarf005/bn-json-formatter --dir downloaded
+          cd downloaded
+          sha256sum --check SHA256SUMS
+          printf '%s  %s\n' "$JSON_FORMATTER_SHA256" json_formatter-linux-x86_64 | sha256sum --check
+          chmod +x json_formatter-linux-x86_64
+          tar -xzf cataclysm-bn-source-cc9c172dda68.tar.gz
+          diff -qr Cataclysm-BN/src ../vendor/Cataclysm-BN/src
+          diff -qr Cataclysm-BN/tools/format ../vendor/Cataclysm-BN/tools/format
+          cmp Cataclysm-BN/LICENSE.txt ../vendor/Cataclysm-BN/LICENSE.txt
+      - name: Compare rebuilt and released CLIs and check idempotence
+        run: |
+          count=0
+          while IFS= read -r -d '' file; do
+            dist/json_formatter-linux-x86_64 < "$file" > rebuilt.json
+            downloaded/json_formatter-linux-x86_64 < "$file" > released.json
+            cmp rebuilt.json released.json
+            downloaded/json_formatter-linux-x86_64 < released.json > twice.json
+            cmp released.json twice.json
+            count=$((count + 1))
+          done < <(find vendor/Cataclysm-BN/data -name '*.json' -type f -not -path '*/data/names/*' -print0)
+          test "$count" -gt 0
+          echo "Compared $count JSON files"
+          printf '[{"id":"한글","weight":1.0,}]' > sample.json
+          status=0
+          downloaded/json_formatter-linux-x86_64 sample.json || status=$?
+          test "$status" -eq 1
+          downloaded/json_formatter-linux-x86_64 sample.json
+          printf '[invalid' > invalid.json
+          if downloaded/json_formatter-linux-x86_64 invalid.json; then
+            echo 'Invalid JSON was accepted'
+            exit 1
+          fi
+  web:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with: { cache: true }
+      - uses: mymindstorm/setup-emsdk@v14
+      - name: Install Firefox test browser
+        run: deno run -A --node-modules-dir=auto npm:@playwright/test@1.61.1/cli install --with-deps firefox
+      - run: deno task test
+      - run: deno task check
